@@ -13,7 +13,7 @@ and/or pointers to data for this function to execute on, and a destination proce
 
 YGM also includes a set of I/O primitives for parsing collections of input documents in parallel as independent lines of
 text and streaming output lines to
-large numbers of destination files. Current parsing functionality supports reading input as CSV, ndjson, and
+large numbers of destination files. Current parsing functionality supports reading input as CSV, ndjson, parquet, and
 unstructured lines of data.
 
 ## General YGM Operations
@@ -60,7 +60,7 @@ captured in the closure of a lambda. In the case of `for_all` operations, the ex
 * MPI
 * [Cereal](https://github.com/USCiLab/cereal) - C++ serialization library
     * will be installed from Github if not present
-* Boost 1.81
+* Boost 1.87
     * will be installed from Github if not present
 * CMake
 * [spdlog](https://github.com/gabime/spdlog) - logging support
@@ -73,7 +73,7 @@ Optional requirements
 YGM is a header-only library that is easy to incorporate into a project through CMake. Adding the following to
 CMakeLists.txt will install YGM and its dependencies as part of your project:
 ```
-set(DESIRED_YGM_VERSION 0.7)
+set(DESIRED_YGM_VERSION 0.10)
 find_package(ygm ${DESIRED_YGM_VERSION} CONFIG)
 if (NOT ygm_FOUND)
     FetchContent_Declare(
