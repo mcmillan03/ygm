@@ -104,10 +104,10 @@ int main(int argc, char** argv) {
       // Make sure every processes read diffrent row or nothing
       {
         static std::vector<std::string> buf;
-        const auto&                     row = *row_opt;
         std::string                     key;
         if (row_opt.has_value()) {
-          key = std::get<std::string>(row[0]);
+          const auto& row = *row_opt;
+          key             = std::get<std::string>(row[0]);
           world.async(0, [](const auto& val) { buf.push_back(val); }, key);
         }
         world.barrier();

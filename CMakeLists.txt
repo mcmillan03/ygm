@@ -26,6 +26,9 @@ project(
     LANGUAGES CXX
 )
 
+# Prioritizes venvs if cmake is being run inside of one.
+set(Python3_FIND_VIRTUALENV FIRST)
+
 #
 # Configuration options for YGM
 #
@@ -36,6 +39,8 @@ option(YGM_FIND_PARQUET_IN_SYSTEM "Find Arrow Parquet installed in the system." 
 option(YGM_INSTALL_PARQUET "Installs Arrow Parquet." OFF)
 set(YGM_PYTHON_VENV_ROOT CACHE PATH "Path to a Python virtual environment root. If set, YGM will use this virtual environment for Python dependencies.")
 option(YGM_DONT_USE_MREMAP "Do not try using mremap for managing memory." OFF)
+
+message(STATUS "YGM_PYTHON_VENV_ROOT = ${YGM_PYTHON_VENV_ROOT}")
 
 #
 # FetchContent dependencies that can be overridden on the command line.
@@ -140,6 +145,19 @@ endif ()
 if (YGM_INSTALL_PARQUET)
     install_arrow_parquet()
 endif ()
+
+#
+# AWS S3 CLI
+#
+#include(ExternalProject)
+#if (YGM_BUILD_S3)
+#    ExternalProject_Add(ygm
+#        GIT_REPOSITORY https://github.com/aws/aws-sdk-cpp.git
+#        GIT_TAG 1.11.935  #origin/master
+#        #CMAKE_ARGS
+#        BUILD_ALWAYS TRUE
+#        ) 
+#endif ()
 
 #
 # Create the YGM target library

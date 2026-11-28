@@ -27,7 +27,7 @@ function (add_ygm_test test_name)
     if (${TEST_WITH_SLURM})
         add_test(${test_exe} "srun" "${CMAKE_CURRENT_BINARY_DIR}/${test_exe}")
     else ()
-        add_test(${test_exe} ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} "4"
+        add_test(${test_exe} ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} "4" #"--mca btl self,vader"
                  ${MPIEXEC_PREFLAGS} "${CMAKE_CURRENT_BINARY_DIR}/${test_exe}"
         )
     endif ()
@@ -84,10 +84,19 @@ add_ygm_test(test_shm_handling)
 add_ygm_test(test_subcommunicators)
 add_ygm_test(test_container_ranges)
 
+#add_ygm_test(test_message_forwarding)
+#add_ygm_test(test_message_ring)
 
 if (Arrow_FOUND AND Parquet_FOUND)
     add_ygm_test(test_parquet_reader)
     link_arrow_parquet(MPI_test_parquet_reader)
+
+    # Manual S3 integration test: requires a bucket, region, and credentials.
+    # Do not register with CTest, which must run without external S3 access.
+    add_executable(MPI_test_s3_parquet_reader test_s3_parquet_reader.cpp)
+    target_compile_options(MPI_test_s3_parquet_reader PRIVATE -Wall -Wextra -Wpedantic)
+    target_link_libraries(MPI_test_s3_parquet_reader PRIVATE ygm::ygm)
+    link_arrow_parquet(MPI_test_s3_parquet_reader)
 
     add_library(test_multi_compilation_unit_lib test_multi_compilation_unit_lib.cpp)
     target_link_libraries(test_multi_compilation_unit_lib PUBLIC ygm::ygm)
